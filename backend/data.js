@@ -9,7 +9,7 @@ const data = {
       brand: "Nike",
       rating: 4.5,
       numReviews: 10,
-      countInStock: 0,
+      countInStock: 3,
       description: "high quality product",
     },
     {
