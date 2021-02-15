@@ -15,4 +15,21 @@ productRouter.get(
   })
 );
 
+productRouter.get("/:id", async (req, res) => {
+  const product = await Product.findOne({ _id: req.params.id });
+
+  //const product = data.products.find((x) => req.params.id === x._id);
+
+  if (product) {
+    res.send(product);
+  } else {
+    res.status(404).send({ message: "Product not Found" });
+  }
+});
+
+productRouter.get("/", async (req, res) => {
+  const products = await Product.find({});
+  res.send(products);
+});
+
 export default productRouter;

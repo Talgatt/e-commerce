@@ -3,6 +3,7 @@ import data from "../data.js";
 import User from "../models/userModel.js";
 import expressAsyncHandler from "express-async-handler";
 import bcrypt from "bcryptjs";
+import generateToken from "../utils.js";
 
 const userRouter = express.Router();
 
@@ -27,9 +28,6 @@ userRouter.get(
 userRouter.post(
   "/signin",
   expressAsyncHandler(async (req, res) => {
-    const email = req.body.email;
-    const password = req.body.password;
-
     const user = await User.findOne({ email: req.body.email });
     if (user) {
       if (bcrypt.compareSync(req.body.password, user.password)) {
@@ -47,8 +45,35 @@ userRouter.post(
     {
       res.status(401).send({ message: "user not found" });
     }
+  })
+);
 
-    res.send({ user });
+userRouter.post(
+  "/register",
+  expressAsyncHandler(async (req, res) => {
+    const userExists = await User.findOne({ email: req.body.email });
+
+    if (!userExists) {
+      const user = new User({
+        email: req.body.email,
+        password: bcrypt.hashSync(req.body.password, 7),
+        name: req.body.name,
+      });
+
+      const newUser = await user.save();
+
+      res.send({
+        _id: newUser._id,
+        name: newUser.name,
+        isAdmin: newUser.isAdmin,
+        isSeller: newUser.isSeller,
+        password: newUser.password,
+        token: generateToken(newUser),
+      });
+    }
+    {
+      res.status(409).send({ message: "user already exists" });
+    }
   })
 );
 
