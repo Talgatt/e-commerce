@@ -3,7 +3,7 @@ import data from "../data.js";
 import User from "../models/userModel.js";
 import expressAsyncHandler from "express-async-handler";
 import bcrypt from "bcryptjs";
-import generateToken from "../utils.js";
+import { generateToken } from "../utils.js";
 
 const userRouter = express.Router();
 
@@ -29,6 +29,7 @@ userRouter.post(
   "/signin",
   expressAsyncHandler(async (req, res) => {
     const user = await User.findOne({ email: req.body.email });
+    console.log("signin ...");
     if (user) {
       if (bcrypt.compareSync(req.body.password, user.password)) {
         res.send({
@@ -52,7 +53,7 @@ userRouter.post(
   "/register",
   expressAsyncHandler(async (req, res) => {
     const userExists = await User.findOne({ email: req.body.email });
-
+    console.log("register ...");
     if (!userExists) {
       const user = new User({
         email: req.body.email,
