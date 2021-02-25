@@ -27,10 +27,21 @@ orderRouter.post(
 );
 
 orderRouter.get(
-  "/order/:id",
+  "/my",
+  isAuth,
   expressAsyncHandler(async (req, res) => {
-    const order = await Order.getById({ _id: req.params.id });
+    const orders = await Order.find({ user: req.user._id });
+    console.log(orders);
+    res.send(orders);
+  })
+);
 
+orderRouter.get(
+  "/:id",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const order = await Order.findOne({ _id: req.params.id });
+    // console.log(order);
     if (order) {
       res.send(order);
     } else {
