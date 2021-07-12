@@ -29,7 +29,9 @@ app.use("/api/orders", orderRouter);
 app.get("/", (req, res) => {
   res.send("Server is ready");
 });
-
+app.get("/api/config/google", (req, res) => {
+  res.send(process.env.GOOGLE_API_KEY || "");
+});
 const port = process.env.PORT || 5000;
 
 if (process.env.NODE_ENV === "production") {
